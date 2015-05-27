@@ -40,5 +40,5 @@ $ ./SafePwdGen.jar -s 'mySecretPassword123!!!' -i 'mymailprovider.com'
 Generated Password: Yo?-I0Mb1vTHIb+xxcm7
 
 I tried to copy the generated password to your system clipboard.
-This may have failed if you are yousing Gnome or some derivative of it.
+This may have failed if you are using Gnome or some derivative of it.
 ```
