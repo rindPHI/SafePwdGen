@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?eclipse.ant.import?>
 <project basedir="." default="all" name="Safe Passwords">
 	<property name="libs" value="lib" />
     <property name="src" value="src" />
@@ -26,6 +25,7 @@
     <target name="jar" depends="build">
         <jar destfile="${destfile}" basedir="${bin}" includes="**/*.class">
             <zipgroupfileset dir="${libs}" includes="*.jar" />
+            <fileset dir="." includes="gpl.txt" />
             <manifest>
                 <attribute name="Main-Class" value="de.dominicscheurer.passwords.SafePwdGen"/>
                 <attribute name="Class-Path" value="commons-cli-1.2.jar"/>
