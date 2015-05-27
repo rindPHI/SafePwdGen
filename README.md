@@ -47,7 +47,7 @@ This may have failed if you are using Gnome or some derivative of it.
 
 This file is part of SafePwdGen, a deterministic password generator.
 
-Copyright 2014-2015 by Dominic Scheurer <dom.scheurer@gmail.com>
+Copyright 2014-2015 by Dominic Scheurer.
 
 SafePwdGen is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
