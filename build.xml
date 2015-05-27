@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?eclipse.ant.import?>
+<project basedir="." default="all" name="Safe Passwords">
+	<property name="libs" value="lib" />
+    <property name="src" value="src" />
+    <property name="bin" value="bin" />
+    <property name="destfile" value="SafePwdGen.jar" />
+    
+    <path id="classpath">
+        <fileset dir="${libs}" includes="commons-cli-1.2.jar"/>
+    </path>
+
+    <target name="build" >
+        <mkdir dir="${bin}" />
+        <javac
+            srcdir="${src}"
+            destdir="${bin}"
+            includes="**/*.java"
+            classpathref="classpath"
+            includeantruntime="false"
+            deprecation="true"
+            source="1.6"
+            />
+    </target>
+
+    <target name="jar" depends="build">
+        <jar destfile="${destfile}" basedir="${bin}" includes="**/*.class">
+            <zipgroupfileset dir="${libs}" includes="*.jar" />
+            <manifest>
+                <attribute name="Main-Class" value="de.dominicscheurer.passwords.SafePwdGen"/>
+                <attribute name="Class-Path" value="commons-cli-1.2.jar"/>
+            </manifest>
+        </jar>
+        <chmod file="${destfile}" perm="ugo+x"/>
+    </target>
+
+    <target name="clean" >
+        <delete dir="${bin}"/>
+        <delete file="${destfile}"/>
+    </target>
+    
+    <target name="run" depends="jar">
+        <java jar="${destfile}">
+            <classpath>
+                <pathelement location="${destfile}"/>
+                <pathelement path="${java.class.path}"/>
+            </classpath>
+        </java>
+    </target>
+    
+    <target name="all" depends="build,jar" />
+</project>
