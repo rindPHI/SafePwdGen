@@ -35,43 +35,52 @@ import org.apache.commons.cli.ParseException;
 import uk.co.maxant.util.BaseX;
 
 /**
- * Deterministic generation of passwords from a (secret) seed
- * password and a (potentially public) identifier. Provides
- * choices for password length and occurrence of special chars
- * in the generated password.<p>
+ * Deterministic generation of passwords from a (secret) seed password and a
+ * (potentially public) identifier. Provides choices for password length and
+ * occurrence of special chars in the generated password.
+ * <p>
  * 
- * Use this class either inside a given project by calling the
- * method {@link #createPwd(String, String, int, boolean)}, or
- * run it as a standalone command line program. Options will be
- * displayed to command line by calling "java -jar SafePwdGen.jar"
- * without arguments.
+ * Use this class either inside a given project by calling the method
+ * {@link #createPwd(String, String, int, boolean)}, or run it as a standalone
+ * command line program. Options will be displayed to command line by calling
+ * "java -jar SafePwdGen.jar" without arguments.
  * 
  * @author Dominic Scheurer
  */
 public class SafePwdGen {
+
     private final static int STD_PWD_LENGTH = 20;
     private final static int MAX_PWD_LENGTH_64 = 86;
     private final static int MAX_PWD_LENGTH_71 = 84;
+
+    // Some message
+    private static final String CLIPBOARD_COPIED_MSG =
+            "\nI tried to copy the generated password to your system clipboard.\n"
+            + "This may have failed if you are yousing Gnome or some derivative of it.";
+    private static final String GENERATED_PASSWORD = "\nGenerated Password: ";
+    private static final String PASSWORD_SIZE_TOO_BIG = "Requested password size too big, reset to ";
 
     /**
      * contains alphanumerics, including both capitals and smalls, and the
      * special signs !-_?=@/+*.
      */
-    private static final char[] DICTIONARY_71 = new char[] { '!', '-', '_', '?',
-            '=', '/', '+', '*', '@', '0', '1', '2', '3', '4', '5', '6', '7',
-            '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
-            'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-            'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-            'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
-            'y', 'z' };
+    private static final char[] DICTIONARY_71 = new char[] { '!', '-', '_',
+            '?', '=', '/', '+', '*', '@', '0', '1', '2', '3', '4', '5', '6',
+            '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+            'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+            'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+            'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
+            'x', 'y', 'z' };
 
     /**
      * Computes an SHA256 hash from the given input.
      * 
-     * @param input Input to compute a hash from.
+     * @param input
+     *            Input to compute a hash from.
      * @return The hashed input.
-     * @throws NoSuchAlgorithmException Thrown if the algorithm "SHA-256"
-     *   is not present in the system.
+     * @throws NoSuchAlgorithmException
+     *             Thrown if the algorithm "SHA-256" is not present in the
+     *             system.
      */
     private static String sha256(String input) throws NoSuchAlgorithmException {
         MessageDigest mDigest = MessageDigest.getInstance("SHA-256");
@@ -89,7 +98,8 @@ public class SafePwdGen {
     /**
      * Converts an input to a Base64 encoded String value.
      * 
-     * @param input Input to encode.
+     * @param input
+     *            Input to encode.
      * @return Base64-encoded input value.
      */
     private static String getBase64(String input)
@@ -98,11 +108,12 @@ public class SafePwdGen {
     }
 
     /**
-     * Same as {@link #getBase64(String)}, but for the base "X"
-     * instead of 64.
+     * Same as {@link #getBase64(String)}, but for the base "X" instead of 64.
      * 
-     * @param input Input to encode.
-     * @param dictionary The characters corresponding to the base "X".
+     * @param input
+     *            Input to encode.
+     * @param dictionary
+     *            The characters corresponding to the base "X".
      * @return Base64-encoded input value.
      * @throws UnsupportedEncodingException
      */
@@ -124,16 +135,20 @@ public class SafePwdGen {
     }
 
     /**
-     * Deterministically creates a password for the given seed and
-     * identifier ("service"), of the given length and containing
-     * special chars depending on the corresponding flag.
+     * Deterministically creates a password for the given seed and identifier
+     * ("service"), of the given length and containing special chars depending
+     * on the corresponding flag.
      * 
-     * @param seed Secret seed password.
-     * @param service Identifier, may be public (like "facebook.com")
-     * @param length Desired password length. Maximum length depends
-     *   on the underlying dictionary, that is on the specialChars
-     *   flag (see options explanation by {@link #main(String[])}.
-     * @param specialChars True iff special chars are desired.
+     * @param seed
+     *            Secret seed password.
+     * @param service
+     *            Identifier, may be public (like "facebook.com")
+     * @param length
+     *            Desired password length. Maximum length depends on the
+     *            underlying dictionary, that is on the specialChars flag (see
+     *            options explanation by {@link #main(String[])}.
+     * @param specialChars
+     *            True iff special chars are desired.
      * @return The generated password.
      */
     public static String createPwd(
@@ -143,24 +158,25 @@ public class SafePwdGen {
             boolean specialChars)
             throws UnsupportedEncodingException,
             NoSuchAlgorithmException {
-        
+
         String hash = sha256(seed + service);
         String encoding;
-        
+
         if (specialChars) {
             encoding = getBaseX(hash, DICTIONARY_71);
         } else {
             encoding = getBase64(hash);
         }
-        
+
         return encoding.substring(
                 0,
                 encoding.length() < length ? encoding.length() : length);
     }
 
     /**
-     * @param args Command line arguments (see code or output of program
-     *   when started with no arguments).
+     * @param args
+     *            Command line arguments (see code or output of program when
+     *            started with no arguments).
      */
     @SuppressWarnings("static-access")
     public static void main(String[] args) {
@@ -231,21 +247,23 @@ public class SafePwdGen {
             }
 
             if (pwdLength > MAX_PWD_LENGTH_64 && !useSpecialChars) {
-                System.out.println("Requested password size too big, reset to "
-                        + MAX_PWD_LENGTH_64);
+                System.out.println(PASSWORD_SIZE_TOO_BIG + MAX_PWD_LENGTH_64);
             }
 
             if (pwdLength > MAX_PWD_LENGTH_71 && useSpecialChars) {
-                System.out.println("Requested password size too big, reset to "
-                        + MAX_PWD_LENGTH_71);
+                System.out.println(PASSWORD_SIZE_TOO_BIG + MAX_PWD_LENGTH_71);
             }
 
-            System.out.print("Generated Password: ");
-            System.out.println(createPwd(
+            String pwd = createPwd(
                     cmd.getOptionValue("s"),
                     cmd.getOptionValue("i"),
                     pwdLength,
-                    useSpecialChars));
+                    useSpecialChars);
+
+            System.out.print(GENERATED_PASSWORD);
+            System.out.println(pwd);
+            System.out.println(CLIPBOARD_COPIED_MSG);
+            SystemClipboardInterface.copy(pwd);
         } catch (ParseException e) {
             System.out.println(e.getLocalizedMessage());
             printHelp(options);
