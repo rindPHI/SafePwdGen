@@ -58,7 +58,7 @@ public class SafePwdGen {
     // Some message
     private static final String CLIPBOARD_COPIED_MSG =
             "\nI tried to copy the generated password to your system clipboard.\n"
-            + "This may have failed if you are yousing Gnome or some derivative of it.";
+            + "This may have failed if you are using Gnome or some derivative of it.";
     private static final String GENERATED_PASSWORD = "\nGenerated Password: ";
     private static final String PASSWORD_SIZE_TOO_BIG = "Requested password size too big, reset to ";
 
