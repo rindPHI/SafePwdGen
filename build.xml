@@ -27,7 +27,7 @@
             <zipgroupfileset dir="${libs}" includes="*.jar" />
             <fileset dir="." includes="gpl.txt" />
             <manifest>
-                <attribute name="Main-Class" value="de.dominicscheurer.passwords.SafePwdGen"/>
+                <attribute name="Main-Class" value="de.dominicscheurer.passwords.Main"/>
                 <attribute name="Class-Path" value="commons-cli-1.2.jar"/>
             </manifest>
         </jar>

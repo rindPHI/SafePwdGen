@@ -25,14 +25,8 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
 import uk.co.maxant.util.BaseX;
 
@@ -42,25 +36,11 @@ import uk.co.maxant.util.BaseX;
  * occurrence of special chars in the generated password.
  * <p>
  * 
- * Use this class either inside a given project by calling the method
- * {@link #createPwd(String, String, int, boolean)}, or run it as a standalone
- * command line program. Options will be displayed to command line by calling
- * "java -jar SafePwdGen.jar" without arguments.
+ * The main method is {@link #createPwd(String, String, int, boolean)}.
  * 
  * @author Dominic Scheurer
  */
 public class SafePwdGen {
-
-    private final static int STD_PWD_LENGTH = 20;
-    private final static int MAX_PWD_LENGTH_64 = 86;
-    private final static int MAX_PWD_LENGTH_71 = 84;
-
-    // Some message
-    private static final String CLIPBOARD_COPIED_MSG =
-            "\nI tried to copy the generated password to your system clipboard.\n"
-            + "This may have failed if you are using Gnome or some derivative of it.";
-    private static final String GENERATED_PASSWORD = "\nGenerated Password: ";
-    private static final String PASSWORD_SIZE_TOO_BIG = "Requested password size too big, reset to ";
 
     /**
      * contains alphanumerics, including both capitals and smalls, and the
@@ -131,7 +111,7 @@ public class SafePwdGen {
      * @param options
      *            Command line options to print the help message for.
      */
-    private static void printHelp(Options options) {
+    static void printHelp(Options options) {
         HelpFormatter hf = new HelpFormatter();
         hf.printHelp("java -jar SavePwdGen.jar [options]", options);
     }
@@ -148,7 +128,7 @@ public class SafePwdGen {
      * @param length
      *            Desired password length. Maximum length depends on the
      *            underlying dictionary, that is on the specialChars flag (see
-     *            options explanation by {@link #main(String[])}.
+     *            options explanation by {@link Main#main(String[])}.
      * @param specialChars
      *            True iff special chars are desired.
      * @return The generated password.
@@ -173,106 +153,5 @@ public class SafePwdGen {
         return encoding.substring(
                 0,
                 encoding.length() < length ? encoding.length() : length);
-    }
-
-    /**
-     * @param args
-     *            Command line arguments (see code or output of program when
-     *            started with no arguments).
-     */
-    @SuppressWarnings("static-access")
-    public static void main(String[] args) {
-        Options options = new Options();
-
-        Option seedPwdOpt = OptionBuilder
-                .withArgName("Seed Password")
-                .isRequired()
-                .hasArg()
-                .withDescription("Password used as a seed")
-                .withLongOpt("seed-password")
-                .create("s");
-
-        Option serviceIdOpt = OptionBuilder
-                .withArgName("Service Identifier")
-                .isRequired()
-                .hasArg()
-                .withDescription(
-                        "The service that the password is created for, e.g. facebook.com")
-                .withLongOpt("service-identifier")
-                .create("i");
-
-        Option pwdLengthOpt = OptionBuilder
-                .withArgName("Password Length")
-                .withType(Integer.class)
-                .hasArg()
-                .withDescription("Length of the password in characters")
-                .withLongOpt("pwd-length")
-                .create("l");
-
-        Option specialChars = OptionBuilder
-                .withArgName("With special chars (TRUE|false)")
-                .withType(Boolean.class)
-                .hasArg()
-                .withDescription(
-                        "Set to true if special chars !-_?=@/+* are desired, else false")
-                .withLongOpt("special-chars")
-                .create("c");
-
-        Option helpOpt = OptionBuilder
-                .withDescription("Prints this help message")
-                .withLongOpt("help")
-                .create("h");
-
-        options.addOption(seedPwdOpt);
-        options.addOption(serviceIdOpt);
-        options.addOption(pwdLengthOpt);
-        options.addOption(specialChars);
-        options.addOption(helpOpt);
-
-        CommandLineParser parser = new GnuParser();
-        try {
-            CommandLine cmd = parser.parse(options, args);
-
-            if (cmd.hasOption("h")) {
-                printHelp(options);
-                System.exit(0);
-            }
-
-            int pwdLength = STD_PWD_LENGTH;
-            if (cmd.hasOption("l")) {
-                pwdLength = new Integer(cmd.getOptionValue("l"));
-            }
-
-            boolean useSpecialChars = true;
-            if (cmd.hasOption("c")) {
-                useSpecialChars = new Boolean(cmd.getOptionValue("c"));
-            }
-
-            if (pwdLength > MAX_PWD_LENGTH_64 && !useSpecialChars) {
-                System.out.println(PASSWORD_SIZE_TOO_BIG + MAX_PWD_LENGTH_64);
-            }
-
-            if (pwdLength > MAX_PWD_LENGTH_71 && useSpecialChars) {
-                System.out.println(PASSWORD_SIZE_TOO_BIG + MAX_PWD_LENGTH_71);
-            }
-
-            String pwd = createPwd(
-                    cmd.getOptionValue("s"),
-                    cmd.getOptionValue("i"),
-                    pwdLength,
-                    useSpecialChars);
-
-            System.out.print(GENERATED_PASSWORD);
-            System.out.println(pwd);
-            System.out.println(CLIPBOARD_COPIED_MSG);
-            SystemClipboardInterface.copy(pwd);
-        } catch (ParseException e) {
-            System.out.println(e.getLocalizedMessage());
-            printHelp(options);
-        } catch (UnsupportedEncodingException e) {
-            System.out.println(e.getLocalizedMessage());
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println(e.getLocalizedMessage());
-        }
     }
 }

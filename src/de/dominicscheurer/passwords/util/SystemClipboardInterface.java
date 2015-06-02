@@ -16,7 +16,7 @@
  * along with SafePwdGen. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.dominicscheurer.passwords;
+package de.dominicscheurer.passwords.util;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
