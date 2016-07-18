@@ -39,15 +39,15 @@ $ ./SafePwdGen.jar -s 'mySecretPassword123!!!' -i 'mymailprovider.com'
 
 Generated Password: Yo?-I0Mb1vTHIb+xxcm7
 
-I tried to copy the generated password to your system clipboard.
-This may have failed if you are using Gnome or some derivative of it.
+Password was copied to your system clipboard.
+Press ENTER after pasting it to the desired destination
 ```
 
 ## License
 
 This file is part of SafePwdGen, a deterministic password generator.
 
-Copyright 2014-2015 by Dominic Scheurer.
+Copyright 2014-2016 by Dominic Scheurer.
 
 SafePwdGen is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
