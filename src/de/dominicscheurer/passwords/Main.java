@@ -18,6 +18,7 @@
 
 package de.dominicscheurer.passwords;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
@@ -50,8 +51,8 @@ public class Main {
     private final static int MAX_PWD_LENGTH_71 = 84;
 
     // Some message
-    private static final String CLIPBOARD_COPIED_MSG = "\nI tried to copy the generated password to your system clipboard.\n"
-            + "This may have failed if you are using Gnome or some derivative of it.";
+    private static final String CLIPBOARD_COPIED_MSG = "\nPassword was copied to your system clipboard.\n"
+            + "Press ENTER after pasting it to the desired destination";
     private static final String GENERATED_PASSWORD = "\nGenerated Password: ";
     private static final String PASSWORD_SIZE_TOO_BIG = "Requested password size too big, reset to ";
 
@@ -146,12 +147,16 @@ public class Main {
             System.out.println(pwd);
             System.out.println(CLIPBOARD_COPIED_MSG);
             SystemClipboardInterface.copy(pwd);
+            
+            System.in.read();
         } catch (ParseException e) {
             System.out.println(e.getLocalizedMessage());
             SafePwdGen.printHelp(options);
         } catch (UnsupportedEncodingException e) {
             System.out.println(e.getLocalizedMessage());
         } catch (NoSuchAlgorithmException e) {
+            System.out.println(e.getLocalizedMessage());
+        } catch (IOException e) {
             System.out.println(e.getLocalizedMessage());
         }
     }
