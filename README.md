@@ -30,6 +30,9 @@ usage: java -jar SavePwdGen.jar [options]
                                                         characters
  -s,--seed-password <Seed Password>                     Password used as a
                                                         seed
+ -x,--hide-password                                     Suppress password
+                                                        output (copy to
+                                                        clipboard only)
 ```
 
 ## Example usage

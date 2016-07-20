@@ -99,6 +99,12 @@ public class Main {
                 .withLongOpt("special-chars")
                 .create("c");
 
+        Option suppressPwdOutpOpt = OptionBuilder
+                .withDescription("Suppress password output (copy to clipboard only)")
+                .withLongOpt("hide-password")
+                .hasArg(false)
+                .create("x");
+
         Option helpOpt = OptionBuilder
                 .withDescription("Prints this help message")
                 .withLongOpt("help")
@@ -108,6 +114,7 @@ public class Main {
         options.addOption(serviceIdOpt);
         options.addOption(pwdLengthOpt);
         options.addOption(specialChars);
+        options.addOption(suppressPwdOutpOpt);
         options.addOption(helpOpt);
 
         CommandLineParser parser = new GnuParser();
@@ -136,6 +143,8 @@ public class Main {
             if (pwdLength > MAX_PWD_LENGTH_71 && useSpecialChars) {
                 System.out.println(PASSWORD_SIZE_TOO_BIG + MAX_PWD_LENGTH_71);
             }
+            
+            boolean suppressPwdOutput = cmd.hasOption('x');
 
             String pwd = SafePwdGen.createPwd(
                     cmd.getOptionValue("s"),
@@ -143,8 +152,10 @@ public class Main {
                     pwdLength,
                     useSpecialChars);
 
-            System.out.print(GENERATED_PASSWORD);
-            System.out.println(pwd);
+            if (!suppressPwdOutput) {
+                System.out.print(GENERATED_PASSWORD);
+                System.out.println(pwd);
+            }
             System.out.println(CLIPBOARD_COPIED_MSG);
             SystemClipboardInterface.copy(pwd);
             
