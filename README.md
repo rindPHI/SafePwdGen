@@ -50,7 +50,7 @@ Press ENTER after pasting it to the desired destination
 
 This file is part of SafePwdGen, a deterministic password generator.
 
-Copyright 2014-2016 by Dominic Scheurer.
+Copyright 2014-2017 by Dominic Steinhöfel.
 
 SafePwdGen is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
